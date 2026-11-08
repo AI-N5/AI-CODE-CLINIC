@@ -55,6 +55,7 @@ const YT_TOPICS = {
 
 const LINKS = {
   form: "https://docs.google.com/forms/d/e/1FAIpQLSfYNAzZ3486VFMZlixEimeTGq1_EZkgwAZ3GQl5C3YaUEOOzw/viewform",
+  sheet: "https://docs.google.com/spreadsheets/d/1RYocaKp316EKn0wNW0Mi25H2-vVafBGL/edit?usp=sharing&ouid=100115001816807478033&rtpof=true&sd=true",
   notebookLM: "https://notebook.google.com/notebook/04e96e59-d0cd-476d-bd29-d5ceb439ca86",
   appsScript: "",
   video: ""

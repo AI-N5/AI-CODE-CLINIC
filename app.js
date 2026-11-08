@@ -355,15 +355,14 @@ function handleLanguageSwitch(newLang) {
     applyLanguageButtonStyle(b, active);
   });
 
-  // Nạp code mẫu và cập nhật topic chips theo ngôn ngữ mới
-  loadSample(newLang, true);
-  renderYtChips(newLang);
+  // Nạp code mẫu theo ngôn ngữ mới
+  loadSample(newLang);
 }
 
 // ==========================================
 // 5. Sample Loading Helper
 // ==========================================
-function loadSample(langKey, isExplicitSampleLoad = false) {
+function loadSample(langKey) {
   const sample = SAMPLE_PROBLEMS[langKey];
   if (!sample) return;
 
@@ -378,46 +377,18 @@ function loadSample(langKey, isExplicitSampleLoad = false) {
   if (fileNameBadge) fileNameBadge.textContent = sample.ext || "solution.txt";
 
   updateLines();
-
-  if (isExplicitSampleLoad) {
-    // Tự động tạo prompt mẫu
-    const prompt = buildPrompt({
-      lang: langKey,
-      code: sample.code,
-      problem: "",
-      error: sample.errorDesc
-    });
-
-    const promptBox = document.getElementById("result-ai-prompt");
-    if (promptBox) promptBox.value = prompt;
-
-    const placeholder = document.getElementById("diagnosis-placeholder");
-    const resultCardsWrapper = document.getElementById("diagnosis-result-cards");
-    const sampleBadge = document.getElementById("mock-sample-badge");
-    const resultStatusTitle = document.getElementById("result-status-title");
-    const resultStatusSub = document.getElementById("result-status-sub");
-
-    if (placeholder) placeholder.classList.add("hidden");
-    if (resultCardsWrapper) resultCardsWrapper.classList.remove("hidden");
-    if (sampleBadge) sampleBadge.classList.remove("hidden");
-
-    if (resultStatusTitle) resultStatusTitle.textContent = "Đã tạo prompt thành công";
-    if (resultStatusSub) resultStatusSub.textContent = "Mã nguồn mẫu đã được đánh số dòng và sẵn sàng sao chép";
-
-    renderYtChips(langKey);
-  }
 }
 
 function initSampleData() {
-  // Nạp code mẫu ban đầu (C)
-  loadSample("c", true);
+  // Nạp code mẫu ban đầu (C) vào khung soạn thảo (ẩn 2 khung kết quả chờ người dùng bấm nút)
+  loadSample("c");
 
   // Nút "Nạp code lỗi mẫu"
   const loadBtn = document.getElementById("load-sample-btn");
   if (loadBtn) {
     loadBtn.addEventListener("click", () => {
-      loadSample(currentLanguage, true);
-      showToast("Đã nạp đoạn mã lỗi mẫu (" + SAMPLE_PROBLEMS[currentLanguage].name + ") và tạo prompt thành công!", "info");
+      loadSample(currentLanguage);
+      showToast("Đã nạp đoạn mã lỗi mẫu (" + SAMPLE_PROBLEMS[currentLanguage].name + "). Hãy nhấn 'Tạo prompt khám code'!", "info");
     });
   }
 
@@ -441,11 +412,9 @@ function initSampleData() {
 
       const placeholder = document.getElementById("diagnosis-placeholder");
       const resultArea = document.getElementById("diagnosis-result-cards");
-      const sampleBadge = document.getElementById("mock-sample-badge");
 
       if (placeholder) placeholder.classList.remove("hidden");
       if (resultArea) resultArea.classList.add("hidden");
-      if (sampleBadge) sampleBadge.classList.add("hidden");
 
       showToast("Đã dọn sạch khung soạn thảo!");
     });
@@ -491,17 +460,6 @@ function initPromptGenerationAction() {
 
     if (placeholder) placeholder.classList.add("hidden");
     if (resultArea) resultArea.classList.remove("hidden");
-
-    // Kiểm tra có phải code mẫu không để hiển thị badge
-    const isExactSample = SAMPLE_PROBLEMS[currentLanguage] && code.trim() === SAMPLE_PROBLEMS[currentLanguage].code.trim();
-    const sampleBadge = document.getElementById("mock-sample-badge");
-    if (sampleBadge) {
-      if (isExactSample) {
-        sampleBadge.classList.remove("hidden");
-      } else {
-        sampleBadge.classList.add("hidden");
-      }
-    }
 
     const resultStatusTitle = document.getElementById("result-status-title");
     const resultStatusSub = document.getElementById("result-status-sub");
